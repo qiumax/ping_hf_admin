@@ -1,0 +1,96 @@
+extends layouts/master
+
+block nav_url
+    include nav/userping
+
+    style.
+      p{padding-top:7px}
+      textarea{width:100%;height:200px}
+
+block content
+    form#form.form-horizontal(action="/api/userping/update" method="post")
+        div.form-group
+            label.control-label.col-sm-2 拼团ID
+            div.col-sm-10
+                p #{userping._id}
+                p.help-block
+
+        div.form-group
+            label.control-label.col-sm-2 姓名
+            div.col-sm-10
+                p #{userping.name}
+                p.help-block
+
+        div.form-group
+            label.control-label.col-sm-2 电话
+            div.col-sm-10
+                p #{userping.phone}
+                p.help-block
+
+        div.form-group
+            label.control-label.col-sm-2 优惠
+            div.col-sm-10
+                p #{userping.bonus}
+                p.help-block
+
+        div.form-group
+          label.control-label.col-sm-2 户籍地
+          div.col-sm-10
+            p  #{userping.location}
+            p.help-block
+
+        div.form-group
+          label.control-label.col-sm-2 用户备注
+          div.col-sm-10
+            p  #{userping.remark}
+            p.help-block
+
+        div.form-group
+          label.control-label.col-sm-2 备注
+          div.col-sm-10
+            textarea(name='notes' ) #{userping.notes}
+            p.help-block
+
+
+        div.form-group
+            label.control-label.col-sm-2 状态
+            div.col-sm-10
+                -if(userping.processed || userping.need_process)
+                      label.radio-inline
+                          -if(userping.processed)
+                              input(type="radio", name="processed" ,value="1" checked ="checked")
+                          -else
+                              input(type="radio", name="processed" ,value="1")
+                          label 已处理
+                      label.radio-inline
+                          -if(userping.processed)
+                              input(type="radio" ,name="processed",value="0")
+                          -else
+                              input(type="radio" ,name="processed",value="0",checked ="checked")
+                          label 未处理
+                -else if(userping.refunded || userping.need_refund)
+                      label.radio-inline
+                        -if(userping.refunded)
+                             input(type="radio", name="refunded" ,value="1" checked ="checked")
+                        -else
+                             input(type="radio", name="refunded" ,value="1")
+                        label 已退款
+                      label.radio-inline
+                        -if(userping.refunded)
+                             input(type="radio" ,name="refunded",value="0")
+                        -else
+                            input(type="radio" ,name="refunded",value="0",checked ="checked")
+                        label 未处理
+                -else
+                      label 拼团中
+        input(type="hidden" value='#{userping._id}' name="user_ping_id")
+
+        button.col-sm-offset-2.btn.btn-primary 编辑
+
+    script.
+        console.log('hi');
+
+
+
+
+

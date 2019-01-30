@@ -1,0 +1,85 @@
+extends layouts/master
+
+block nav_url
+    include nav/userping
+
+
+block content
+    div.row
+      h3.col-md-3 #{title}
+
+    div &nbsp
+
+    div.row
+        div.col-md-12
+            form.form-horizontal(action="/api/userping/user_ping_id", method="POST")
+                div.control-group
+                    div.controls
+                        input(id="query", name="query", placeholder="请输入关键字", value="", type="text")
+                        button.btn.btn-sm.btn-primary(type="submit" style="margin-left:1px;") 搜索
+
+    div &nbsp
+
+    table.table.table-striped
+      thead
+        tr
+          th 姓名
+          th 电话
+          th 产品
+          th 户籍地
+          th 付款时间
+          th 操作
+
+      -for(var i=0; i<userpings.length; i++)
+        tbody
+          tr
+            td #{userpings[i].name}
+            td #{userpings[i].phone}
+            td #{userpings[i].product}
+            td #{userpings[i].location}
+            td #{userpings[i].create_time}
+            td
+              a(href="/api/userping/edit/#{userpings[i]._id}") 编辑
+
+    div(style="text-align:center")
+      ul#page.pagination
+
+
+    script.
+      var page = '#{page}';
+      var page_total = '#{page_total}';
+
+      if (page_total > 1) {
+        $('#page').bootstrapPaginator({
+          currentPage: page,
+          totalPages: page_total,
+          size: "normal",
+          bootstrapMajorVersion: 3,
+          alignment: "right",
+          numberOfPages: 5,
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          onPageClicked: function (e, originalEvent, type, page) {
+            console.log("Page item clicked, type: " + type + " page: " + page);
+            window.open("/api/userping/list?page=" + page, "_self");
+
+          }
+        })
+      }
+
+
+
+
+

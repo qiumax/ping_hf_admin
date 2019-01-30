@@ -1,0 +1,87 @@
+extends layouts/master
+
+block nav_url
+  include nav/user
+
+block side_bar
+  include side_bar/user
+
+block content
+  div.row
+    h3.col-md-3 #{title}
+
+  div &nbsp
+
+  div.row
+    div.col-md-12
+        form.form-horizontal(action="/api/user/excelfailuser", method="GET")
+          div.control-group
+              div.controls(style="padding-top:20px;")
+                开始时间：
+                input(id="date1", name="date1", placeholder="2019-01-04",  type="text",style="margin-right:5px;")
+                结束时间：
+                input(id="date2", name="date2", placeholder="2019-01-25", type="text")
+                button.btn.btn-sm.btn-primary(type="submit" style="margin-left:5px;margin-right:10px;") 导出
+
+  div &nbsp
+
+  table.table.table-striped
+    thead
+      tr
+        th 姓名
+        th 电话
+        th 购买产品
+        th 地区
+        th 提交时间
+
+
+    -for(var i=0; i<users.length; i++)
+      tbody
+        tr
+          td #{users[i].name}
+          td #{users[i].phone}
+          td #{users[i].product.name}
+          td #{users[i].location}
+          td #{users[i].create_time}
+
+
+  div(style="text-align:center")
+    ul#page.pagination
+
+
+  script.
+
+      var page = '#{page}';
+      var page_total = '#{page_total}';
+
+      if (page_total > 1) {
+        $('#page').bootstrapPaginator({
+          currentPage: page,
+          totalPages: page_total,
+          size: "normal",
+          bootstrapMajorVersion: 3,
+          alignment: "right",
+          numberOfPages: 5,
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          onPageClicked: function (e, originalEvent, type, page) {
+            console.log("Page item clicked, type: " + type + " page: " + page);
+            var pagetype = '#{pagetype}';
+            window.open("/api/user/failuser?page=" + page, "_self");
+
+
+          }
+        })
+      }

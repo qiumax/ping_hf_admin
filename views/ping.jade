@@ -1,0 +1,87 @@
+extends layouts/master
+
+block nav_url
+    include nav/ping
+
+block side_bar
+    include side_bar/ping
+
+block content
+    script.
+        console.log("hi");
+        function formatDateTime(timeStamp) {
+          var date = new Date();
+          date.setTime(timeStamp * 1000);
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          m = m < 10 ? ('0' + m) : m;
+          var d = date.getDate();
+          d = d < 10 ? ('0' + d) : d;
+          var h = date.getHours();
+          h = h < 10 ? ('0' + h) : h;
+          var minute = date.getMinutes();
+          var second = date.getSeconds();
+          minute = minute < 10 ? ('0' + minute) : minute;
+          second = second < 10 ? ('0' + second) : second;
+          return y + '-' + m + '-' + d + ' ' + h + ':' + minute;
+        };
+    div.row
+        h3.col-md-3 #{title}
+
+    div &nbsp
+
+    div.row
+        div.col-md-12
+            form.form-horizontal(action="/api/ping/search", method="POST")
+                div.control-group
+                    div.controls
+                        input(id="query", name="query", placeholder="请输入关键字", value="", type="text")
+                        button.btn.btn-sm.btn-primary(type="submit" style="margin-left:1px;") 搜索
+
+    div &nbsp
+
+    table.table.table-striped
+        thead
+            tr
+                th ID
+
+                th 发起时间
+                th 结束时间
+                th 拼团人数
+                th 状态
+                -if(title != '拼团中')
+                  th 操作
+
+        -for(var i=0; i<pings.length; i++)
+            tbody
+                tr
+                    td #{pings[i]._id}
+
+                    td #{pings[i].create_time}
+                    td <script>document.write(window.formatDateTime('#{pings[i].expire}'))</script>
+                    td #{pings[i].finish_num}
+                    -if(pings[i].state==0)
+                        td 未开始
+                    -else if(pings[i].state==1)
+                        td 拼团中
+                    -else
+                        -if(pings[i].need_process)
+                            td 待联络
+                        -else if(pings[i].need_refund)
+                            td 待退款
+                        -else if(pings[i].refunded)
+                            td 已退款
+                        -else
+                            td 已处理
+                    -if(title != '拼团中')
+                      th
+                        a(href="/api/ping/excelping?ping_id=#{pings[i]._id}") 拼团数据 | 
+                        a(href="/api/ping/excelhongbao?ping_id#{pings[i]._id}") 红包数据
+
+
+
+
+
+
+
+
